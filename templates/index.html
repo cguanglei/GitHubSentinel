@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Sentinel</title>
+</head>
+<body>
+    <h1>GitHub Sentinel</h1>
+    <form id="subscribe-form">
+        <input type="text" id="repo_name" placeholder="Repository Name" required>
+        <button type="submit">Subscribe</button>
+    </form>
+    <ul id="subscription-list"></ul>
+
+    <script>
+        document.getElementById('subscribe-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const repoName = document.getElementById('repo_name').value;
+            fetch('/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: 1, repo_name: repoName }),
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message));
+        });
+
+        fetch('/subscriptions/1')
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById('subscription-list');
+                data.subscriptions.forEach(sub => {
+                    const li = document.createElement('li');
+                    li.textContent = sub;
+                    list.appendChild(li);
+                });
+            });
+    </script>
+</body>
+</html>
